@@ -193,7 +193,7 @@ void delete_node(struct node*root,int item)
     }
     if(flag==0)
     {
-        printf("Node node found\n") ;
+        printf("Node not found\n") ;
         return ; 
     }
     int option ;
