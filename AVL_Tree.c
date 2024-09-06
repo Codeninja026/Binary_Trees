@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 struct node
 {
  int key;
@@ -7,6 +8,91 @@ struct node
  struct node *rchild;
  int height;
 };
+struct node *root=NULL;
+
+int height(struct node*);
+int balanceFactor(struct node*);
+int max(int,int);
+struct node *leftRotate(struct node*);
+struct node *rightRotate(struct node*);
+struct node *createNode(int);
+struct node *insert(struct node*,int);
+void inorder(struct node*);
+void preorder(struct node*);
+void postorder(struct node*);
+
+
+int main()
+{
+    int ch,key;
+    while(1)
+    {
+        printf("\n");
+        printf("1. insert node:\n");
+        printf("2. inorder:\n");
+        printf("3. preorder:\n");
+        printf("4. postorder:\n");
+        printf("6. exit: \n");
+        printf("Enter your choice: ");
+        scanf("%d",&ch);
+        switch(ch)
+        {
+
+            case 1:printf("Enter the item to be inserted: ");
+                    scanf("%d",&key);
+                    root=insert(root,key);
+                    break;
+            case 2:inorder(root);
+                    break;
+            case 3: preorder(root);
+                    break;
+            case 4: postorder(root);
+                    break;
+            case 6: printf(".......................program terminated.........................");
+                    exit(0);
+
+            default: printf("Invalid choise..");
+            
+        }
+    }
+    return 0; 
+}
+
+void inorder(struct node *root)
+{
+    struct node *ptr;
+    ptr=root;
+    if(ptr)
+    {
+        inorder(ptr->lchild);
+        printf("%d ",ptr->key);
+        inorder(ptr->rchild);
+    }
+}
+void preorder(struct node* root)
+{
+    struct node *ptr;
+    ptr=root;
+    if(ptr)
+    {
+        printf("%d ",ptr->key);
+        preorder(ptr->lchild);
+        preorder(ptr->rchild);
+    }
+}
+
+void postorder(struct node* root)
+{
+    struct node* ptr;
+    ptr=root;
+    if(ptr)
+    {
+        postorder(ptr->lchild);
+        postorder(ptr->rchild);
+        printf("%d ",ptr->key);
+    }
+     
+}
 int height(struct node *ptr)
 {
  if(ptr==NULL)
@@ -15,13 +101,13 @@ int height(struct node *ptr)
 }
 int max(int a, int b)
 {
- return (a>b)?a:b;
+    return (a>b)?a:b;
 }
 int balanceFactor(struct node *n)
 {
  if(n==NULL)
  {
- return 0;
+    return 0;
  }
  return height(n->lchild) - height(n->rchild);
 }
@@ -69,109 +155,23 @@ struct node *insert(struct node* node, int key)
  int bf = balanceFactor(node);
  if(bf>1 && key < node->lchild->key)
  {
- return rightRotate(node);
+    return rightRotate(node);
  }
  if(bf<-1 && key > node->rchild->key)
  {
- return leftRotate(node);
+    return leftRotate(node);
  }
  if(bf>1 && key > node->lchild->key)
  {
  node->lchild = leftRotate(node->lchild);
- return rightRotate(node);
+    return rightRotate(node);
  }
  if(bf<-1 && key < node->rchild->key)
  {
- node->rchild = rightRotate(node->rchild);
- return leftRotate(node);
+    node->rchild = rightRotate(node->rchild);
+    return leftRotate(node);
  }
  return node;
 }
-struct node* succ(struct node *ptr)
-{
- struct node *ptr1;
- ptr1=ptr->rchild;
- if(ptr1!=NULL)
- {
- while(ptr1->lchild!=NULL)
- {
- ptr1=ptr1->lchild;
- }
- }
- return ptr1;
-}
-struct node* deleteNode(struct node* root, int k)
-{
- if (root == NULL)
- return root;
- if ( k < root->key )
- root->lchild = deleteNode(root->lchild, k);
- else if( k > root->key )
- root->rchild = deleteNode(root->rchild, k);
- else
- {
- if( (root->lchild == NULL) || (root->rchild == NULL) )
- {
- struct node *temp = root->lchild ? root->lchild :root->rchild;
- if (temp == NULL)
- {
- temp = root;
- root = NULL;
- }
- else
- *root = *temp;
- free(temp);
- }
- else
- {
- struct node* temp = succ(root);
- root->key = temp->key;
- root->rchild = deleteNode(root->rchild, temp->key);
- }
- }
- if (root == NULL)
- return root;
- root->height = 1 + max(height(root->lchild),
- height(root->rchild));
- int balance = balanceFactor(root);
- if (balance > 1 && balanceFactor(root->lchild) >= 0)
- return rightRotate(root);
- if (balance > 1 && balanceFactor(root->lchild) < 0)
- {
- root->lchild = leftRotate(root->lchild);
- return rightRotate(root);
- }
- if (balance < -1 && balanceFactor(root->rchild) <= 0)
- return leftRotate(root);
- if (balance < -1 && balanceFactor(root->rchild) > 0)
- {
- root->rchild = rightRotate(root->rchild);
- return leftRotate(root);
- }
- return root;
-}
-void preorder(struct node *root)
-{
- if(root != NULL)
- {
- printf("%d ", root->key);
- preorder(root->lchild);
- preorder(root->rchild);
- }
-}
- int main(){
- struct node * root = NULL;
- root = insert(root, 10);
- root = insert(root, 20);
- root = insert(root, 40);
- preorder(root);
- printf("\n");
- root = insert(root, 50);
- root = insert(root, 60);
- root = insert(root, 30);
- preorder(root);
- root=deleteNode(root,30);
- printf("\n");
- preorder(root);
- return 0;
-} 
+
+ 
