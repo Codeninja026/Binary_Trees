@@ -32,12 +32,12 @@ int main()
     while(1)
     {
         printf("\n");
-        printf("1. insert node:\n");
-        printf("2. inorder:\n");
-        printf("3. preorder:\n");
-        printf("4. postorder:\n");
-        printf("6. exit: \n");
-        printf("7. Search in AVL: \n");
+        printf("1. insert node\n");
+        printf("2. inorder\n");
+        printf("3. preorder\n");
+        printf("4. postorder\n");
+        printf("6. exit \n");
+        printf("7. Search in AVL\n");
         printf("8. delete in AVL: \n");
         printf("Enter your choice: ");
         scanf("%d",&ch);
