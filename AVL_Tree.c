@@ -3,7 +3,7 @@
 
 struct node
 {
- int key;
+ int key,data;
  struct node *lchild;
  struct node *rchild;
  int height;
@@ -15,11 +15,15 @@ int balanceFactor(struct node*);
 int max(int,int);
 struct node *leftRotate(struct node*);
 struct node *rightRotate(struct node*);
-struct node *createNode(int);
+struct node *create(int);
 struct node *insert(struct node*,int);
 void inorder(struct node*);
 void preorder(struct node*);
 void postorder(struct node*);
+
+struct node* binarysearchtree(struct node*,int);
+struct node* deleteNode(struct node*,int);
+struct node* successor(struct node*);
 
 
 int main()
@@ -33,6 +37,8 @@ int main()
         printf("3. preorder:\n");
         printf("4. postorder:\n");
         printf("6. exit: \n");
+        printf("7. Search in AVL: \n");
+        printf("8. delete in AVL: \n");
         printf("Enter your choice: ");
         scanf("%d",&ch);
         switch(ch)
@@ -50,6 +56,14 @@ int main()
                     break;
             case 6: printf(".......................program terminated.........................");
                     exit(0);
+            case 7: printf("Enter key to search in AVL:");
+                    scanf("%d",&key);
+                    binarysearchtree(root,key);
+                    break;
+            case 8 : printf("Enter key to delete in AVL: ");
+                     scanf("%d",&key);
+                     deleteNode(root,key);
+                     break;
 
             default: printf("Invalid choise..");
             
@@ -69,7 +83,7 @@ void inorder(struct node *root)
         inorder(ptr->rchild);
     }
 }
-void preorder(struct node* root)
+void preorder(struct node *root)
 {
     struct node *ptr;
     ptr=root;
@@ -135,7 +149,8 @@ struct node* leftRotate(struct node* x)
  height(y->rchild)) + 1;
  return y;
 }
-struct node *createNode(int key){
+struct node *create(int key)
+{
  struct node* newnode = (struct node *) malloc(sizeof(struct node));
  newnode->key = key;
  newnode->lchild = NULL;
@@ -146,7 +161,7 @@ struct node *createNode(int key){
 struct node *insert(struct node* node, int key)
 {
  if (node == NULL)
- return createNode(key);
+ return create(key);
  if (key < node->key)
  node->lchild = insert(node->lchild, key);
  else if (key > node->key)
@@ -163,7 +178,7 @@ struct node *insert(struct node* node, int key)
  }
  if(bf>1 && key > node->lchild->key)
  {
- node->lchild = leftRotate(node->lchild);
+    node->lchild = leftRotate(node->lchild);
     return rightRotate(node);
  }
  if(bf<-1 && key < node->rchild->key)
@@ -173,5 +188,87 @@ struct node *insert(struct node* node, int key)
  }
  return node;
 }
-
- 
+struct node* binarysearchtree(struct node *ptr,int key)//same as bst
+ {
+     if(ptr==NULL)
+     {
+         return ptr;
+     }
+     else if(ptr->data==key)
+     {
+         printf("node found.");
+         return ptr;
+     }
+     else if(key<ptr->data)
+     {
+         return binarysearchtree(ptr->lchild,key);
+     }
+     else if(key>ptr->data)
+     {
+         return binarysearchtree(ptr->rchild,key);
+     }
+     return ptr;
+ }
+struct node* successor(struct node *ptr)
+{
+ struct node *ptr1;
+ ptr1=ptr->rchild;
+ if(ptr1!=NULL)
+ {
+    while(ptr1->lchild!=NULL)
+    {
+        ptr1=ptr1->lchild;
+    }
+ }
+ return ptr1;
+}
+struct node* deleteNode(struct node* root, int k)
+{
+ if (root == NULL)
+ return root;
+ if ( k < root->key )
+ root->lchild = deleteNode(root->lchild, k);
+ else if( k > root->key )
+ root->rchild = deleteNode(root->rchild, k);
+ else
+ {
+    if( (root->lchild == NULL) || (root->rchild == NULL) )
+    {
+        struct node *temp = root->lchild ? root->lchild :root->rchild;
+        if (temp == NULL)
+        {
+            temp = root;
+            root = NULL;
+        }
+         else
+        *root = *temp;
+        free(temp);
+    }
+    else
+    {
+        struct node* temp = successor(root);
+        root->key = temp->key;
+        root->rchild = deleteNode(root->rchild, temp->key);
+    }
+ }
+ if (root == NULL)
+ return root;
+ root->height = 1 + max(height(root->lchild),
+ height(root->rchild));
+ int balance = balanceFactor(root);
+ if (balance > 1 && balanceFactor(root->lchild) >= 0)
+ return rightRotate(root);
+ if (balance > 1 && balanceFactor(root->lchild) < 0)
+ {
+    root->lchild = leftRotate(root->lchild);
+    return rightRotate(root);
+ }
+ if (balance < -1 && balanceFactor(root->rchild) <= 0)
+ return leftRotate(root);
+ if (balance < -1 && balanceFactor(root->rchild) > 0)
+ {
+    root->rchild = rightRotate(root->rchild);
+    return leftRotate(root);
+ }
+ return root;
+}
