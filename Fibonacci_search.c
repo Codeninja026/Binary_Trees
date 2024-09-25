@@ -82,7 +82,7 @@ int main()
 
     if(result!=-1)
     {
-        printf("............Element found..........\n");
+        printf("Element is found at index: %d: \n",result);
     }
     else
     {
