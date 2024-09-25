@@ -72,9 +72,6 @@ int main()
     {
         scanf("%d",&a[i]);    
     }
-
-    printf("\n");
-
     printf("Enter the key value: ");
     scanf("%d",&key);
 
@@ -82,7 +79,7 @@ int main()
 
     if(result!=-1)
     {
-        printf("Element is found at index: %d: \n",result);
+        printf("Element is found at index: %d \n",result);
     }
     else
     {
